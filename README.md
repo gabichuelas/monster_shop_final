@@ -9,6 +9,9 @@ The base repo is a bare bones (non-styled) completed version of the previous gro
 
 [Original Project Spec README](https://github.com/turingschool-examples/monster_shop_final/blob/master/README.md)
 
+[Brain Dump / Process Gist](https://gist.github.com/gabichuelas/5cd33cac6c10d88650957a83d40839fc)
+
+
 #### Completion Criteria
 
 1. Merchants need full CRUD functionality on bulk discounts, and will be accessed a link on the merchant's dashboard.
@@ -21,7 +24,6 @@ The base repo is a bare bones (non-styled) completed version of the previous gro
 1. When there is a conflict between two discounts, the greater of the two will be applied. 
 1. Final discounted prices should appear on the orders show page.
 
-[Brain Dump Gist](https://gist.github.com/gabichuelas/5cd33cac6c10d88650957a83d40839fc)
 
 #### Mod 2 Learning Goals reflected:
 - Database relationships and migrations
