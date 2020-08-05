@@ -27,7 +27,12 @@ class Cart
   def grand_total
     grand_total = 0.0
     @contents.each do |item_id, quantity|
-      grand_total += Item.find(item_id).price * quantity
+      item = Item.find(item_id)
+      if get_discount(item.id) != nil
+        grand_total += discounted_subtotal(item.id)
+      else
+        grand_total += subtotal_of(item.id)
+      end
     end
     grand_total
   end
