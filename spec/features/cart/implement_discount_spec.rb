@@ -13,10 +13,12 @@ RSpec.describe 'As a visitor' do
       @giant = @megan.items.create!(name: 'Giant', description: "I'm a Giant!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
       @fig = @megan.items.create!(name: 'Fig Jam', description: "I'm delicious!", price: 5, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 22 )
 
-      @hippo = @brian.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
+      @hippo = @brian.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 6 )
 
       @twenty_ten = Discount.create!(name: 'Twenty on Ten', item_minimum: 10, percent: 20, merchant_id: @megan.id)
       @five_five = Discount.create!(name: 'Five on Five', item_minimum: 5, percent: 5, merchant_id: @megan.id)
+      @ten_on_four = Discount.create!(name: 'Ten on Four', item_minimum: 4, percent: 10, merchant_id: @megan.id)
+      @fifteen_on_four = Discount.create!(name: 'Fifteen on Four', item_minimum: 4, percent: 15, merchant_id: @megan.id)
 
       visit item_path(@ogre)
       click_button 'Add to Cart'
@@ -38,6 +40,46 @@ RSpec.describe 'As a visitor' do
         expect(page).to have_content("Quantity: 5")
         expect(page).to have_content("Subtotal: $23.75")
         expect(page).to have_content("Discount Applied: #{@five_five.percent}%")
+      end
+    end
+
+    it 'discounts are merchant specific and only apply to merchant\'s items' do
+      #
+      visit "/cart"
+
+      within "#item-#{@fig.id}" do
+        expect(page).to have_content("Quantity: 1")
+        4.times do
+          click_on 'More of This!'
+        end
+        expect(page).to have_content("Quantity: 5")
+        expect(page).to have_content("Subtotal: $23.75")
+        expect(page).to have_content("Discount Applied: #{@five_five.percent}%")
+      end
+
+      within "#item-#{@hippo.id}" do
+        expect(page).to have_content("Quantity: 1")
+        4.times do
+          click_on 'More of This!'
+        end
+        expect(page).to have_content("Quantity: 5")
+        expect(page).to have_content("Subtotal: $250.00")
+        expect(page).to_not have_content("Discount Applied: #{@five_five.percent}%")
+      end
+    end
+
+    it 'If two discounts have the same item_minimum, the better discount is chosen' do
+
+      visit "/cart"
+
+      within "#item-#{@fig.id}" do
+        expect(page).to have_content("Quantity: 1")
+        3.times do
+          click_on 'More of This!'
+        end
+        expect(page).to have_content("Quantity: 4")
+        expect(page).to have_content("Subtotal: $17.00")
+        expect(page).to have_content("Discount Applied: #{@fifteen_on_four.percent}%")
       end
     end
   end
