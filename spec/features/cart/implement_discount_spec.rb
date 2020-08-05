@@ -17,10 +17,6 @@ RSpec.describe 'As a visitor' do
 
       @twenty_ten = Discount.create!(name: 'Twenty on Ten', item_minimum: 10, percent: 20, merchant_id: @megan.id)
       @five_five = Discount.create!(name: 'Five on Five', item_minimum: 5, percent: 5, merchant_id: @megan.id)
-    end
-
-    it 'then the discount is applied automatically and seen on the cart show page' do
-      #
 
       visit item_path(@ogre)
       click_button 'Add to Cart'
@@ -28,15 +24,20 @@ RSpec.describe 'As a visitor' do
       click_button 'Add to Cart'
       visit item_path(@fig)
       click_button 'Add to Cart'
+    end
 
+    it 'then the discount is applied automatically and seen on the cart show page' do
+      #
       visit "/cart"
 
       within "#item-#{@fig.id}" do
+        expect(page).to have_content("Quantity: 1")
         4.times do
           click_on 'More of This!'
         end
-        save_and_open_page
         expect(page).to have_content("Quantity: 5")
+        expect(page).to have_content("Subtotal: $23.75")
+        expect(page).to have_content("Discount Applied: #{@five_five.name}")
       end
     end
   end
