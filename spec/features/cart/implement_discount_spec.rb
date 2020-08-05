@@ -37,7 +37,7 @@ RSpec.describe 'As a visitor' do
         end
         expect(page).to have_content("Quantity: 5")
         expect(page).to have_content("Subtotal: $23.75")
-        expect(page).to have_content("Discount Applied: #{@five_five.name}")
+        expect(page).to have_content("Discount Applied: #{@five_five.percent}%")
       end
     end
   end
