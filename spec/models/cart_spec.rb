@@ -63,5 +63,19 @@ RSpec.describe Cart do
 
       expect(@cart.count_of(@giant.id)).to eq(1)
     end
+
+    it '.check_discounts()' do
+
+      five_five = Discount.create!(name: 'Five on Five', item_minimum: 5, percent: 5, merchant_id: @megan.id)
+
+      4.times do
+        @cart.add_item(@ogre.id)
+      end
+      expect(@cart.count_of(@ogre.id)).to eq(5)
+
+      expect(@cart.check_discounts(@ogre.id)).to eq(five_five)
+      
+      expect(five_five.merchant_id).to eq(@megan.id)
+    end
   end
 end
