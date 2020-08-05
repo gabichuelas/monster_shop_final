@@ -54,7 +54,7 @@ RSpec.describe 'As a visitor' do
         end
         expect(page).to have_content("Quantity: 5")
         expect(page).to have_content("Subtotal: $23.75")
-        
+
         expect(page).to have_content("Discount Applied: #{@five_five.percent}%")
       end
 
@@ -83,6 +83,25 @@ RSpec.describe 'As a visitor' do
         expect(page).to have_content("Subtotal: $17.00")
         expect(page).to have_content("Discount Applied: #{@fifteen_on_four.percent}%")
       end
+    end
+
+    it 'Grand Total reflects applied discounts in cart' do
+
+      visit "/cart"
+
+      expect(page).to have_content('Total: $75.00')
+
+      within "#item-#{@fig.id}" do
+        expect(page).to have_content("Quantity: 1")
+        3.times do
+          click_on 'More of This!'
+        end
+        expect(page).to have_content("Quantity: 4")
+        expect(page).to have_content("Subtotal: $17.00")
+        expect(page).to have_content("Discount Applied: #{@fifteen_on_four.percent}%")
+      end
+
+      expect(page).to have_content('Total: $87.00')
     end
   end
 end
