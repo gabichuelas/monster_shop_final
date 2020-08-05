@@ -24,11 +24,6 @@ class Cart
     end
   end
 
-  # maybe a method that groups items by merchant_id in a hash?
-
-  # if any of the @contents.values
-
-
   def grand_total
     grand_total = 0.0
     @contents.each do |item_id, quantity|
@@ -39,20 +34,29 @@ class Cart
 
   def count_of(item_id)
     @contents[item_id.to_s]
-    # if result matches an item_minimum
-    # AND item.merchant_id in the AR table,
-    # then activate discount?
   end
 
   def subtotal_of(item_id)
     @contents[item_id.to_s] * Item.find(item_id).price
   end
 
+  def discounted_subtotal(item_id)
+    # create model spec for this
+    discount = discount_percentage(item_id).fdiv(100)
+    subtotal = @contents[item_id.to_s] * Item.find(item_id).price
+    subtotal -= discount * subtotal
+  end
+
   def limit_reached?(item_id)
     count_of(item_id) == Item.find(item_id).inventory
   end
 
-  def check_discounts(item_id)
-    
+  def get_discount(item_id)
+    item = Item.find(item_id)
+    discount = Discount.where(merchant_id: item.merchant_id, item_minimum: count_of(item_id)).order('percent desc').first
+  end
+
+  def discount_percentage(item_id)
+    get_discount(item_id).percent
   end
 end
