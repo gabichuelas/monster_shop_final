@@ -17,8 +17,6 @@ RSpec.describe 'As a visitor' do
 
       @twenty_ten = Discount.create!(name: 'Twenty on Ten', item_minimum: 10, percent: 20, merchant_id: @megan.id)
       @five_five = Discount.create!(name: 'Five on Five', item_minimum: 5, percent: 5, merchant_id: @megan.id)
-      @ten_on_four = Discount.create!(name: 'Ten on Four', item_minimum: 4, percent: 10, merchant_id: @megan.id)
-      @fifteen_on_four = Discount.create!(name: 'Fifteen on Four', item_minimum: 4, percent: 15, merchant_id: @megan.id)
 
       visit item_path(@ogre)
       click_button 'Add to Cart'
@@ -71,6 +69,8 @@ RSpec.describe 'As a visitor' do
     end
 
     it 'If two discounts have the same item_minimum, the better discount is chosen' do
+      ten_on_four = Discount.create!(name: 'Ten on Four', item_minimum: 4, percent: 10, merchant_id: @megan.id)
+      fifteen_on_four = Discount.create!(name: 'Fifteen on Four', item_minimum: 4, percent: 15, merchant_id: @megan.id)
 
       visit "/cart"
 
@@ -81,11 +81,13 @@ RSpec.describe 'As a visitor' do
         end
         expect(page).to have_content("Quantity: 4")
         expect(page).to have_content("Subtotal: $17.00")
-        expect(page).to have_content("Discount Applied: #{@fifteen_on_four.percent}%")
+        expect(page).to have_content("Discount Applied: #{fifteen_on_four.percent}%")
       end
     end
 
     it 'Grand Total reflects applied discounts in cart' do
+      ten_on_four = Discount.create!(name: 'Ten on Four', item_minimum: 4, percent: 10, merchant_id: @megan.id)
+      fifteen_on_four = Discount.create!(name: 'Fifteen on Four', item_minimum: 4, percent: 15, merchant_id: @megan.id)
 
       visit "/cart"
 
@@ -98,7 +100,7 @@ RSpec.describe 'As a visitor' do
         end
         expect(page).to have_content("Quantity: 4")
         expect(page).to have_content("Subtotal: $17.00")
-        expect(page).to have_content("Discount Applied: #{@fifteen_on_four.percent}%")
+        expect(page).to have_content("Discount Applied: #{fifteen_on_four.percent}%")
       end
 
       expect(page).to have_content('Total: $87.00')

@@ -51,7 +51,7 @@ class Cart
 
   def get_discount(item_id)
     item = Item.find(item_id)
-    item.merchant.discounts.where(item_minimum: count_of(item_id)).order('percent desc').first
+    item.merchant.discounts.where('item_minimum <= ?', count_of(item_id)).order('percent desc').first
   end
 
   def discount_percentage(item_id)
