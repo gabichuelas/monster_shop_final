@@ -40,5 +40,31 @@ RSpec.describe OrderItem do
       expect(@order_item_1.fulfilled).to eq(true)
       expect(@ogre.inventory).to eq(3)
     end
+
+    it '.subtotal & .discounted_subtotal' do
+      @order_item_1.update(quantity: 5)
+      expect(@order_item_1.subtotal).to eq(101.25)
+
+      five_five = Discount.create!(name: 'Five on Five', item_minimum: 5, percent: 5, merchant_id: @megan.id)
+
+      expect(@order_item_1.discounted_subtotal).to eq(96.19)
+      expect(@order_item_1.subtotal).to eq(96.19)
+    end
+
+    it '.get_discount' do
+      five_five = Discount.create!(name: 'Five on Five', item_minimum: 5, percent: 5, merchant_id: @megan.id)
+
+      @order_item_1.update(quantity: 5)
+
+      expect(@order_item_1.get_discount).to eq(five_five)
+    end
+
+    it '.discount_percentage' do
+      five_five = Discount.create!(name: 'Five on Five', item_minimum: 5, percent: 5, merchant_id: @megan.id)
+
+      @order_item_1.update(quantity: 5)
+
+      expect(@order_item_1.discount_percentage).to eq(5)
+    end
   end
 end
