@@ -24,6 +24,11 @@ class Cart
     end
   end
 
+  # maybe a method that groups items by merchant_id in a hash?
+
+  # if any of the @contents.values
+
+
   def grand_total
     grand_total = 0.0
     @contents.each do |item_id, quantity|
@@ -34,6 +39,9 @@ class Cart
 
   def count_of(item_id)
     @contents[item_id.to_s]
+    # if result matches an item_minimum
+    # AND item.merchant_id in the AR table,
+    # then activate discount?
   end
 
   def subtotal_of(item_id)
