@@ -41,14 +41,9 @@ class Cart
   end
 
   def discounted_subtotal(item_id)
-    # create model spec for this
     discount = discount_percentage(item_id).fdiv(100)
     subtotal = @contents[item_id.to_s] * Item.find(item_id).price
     subtotal -= discount * subtotal
-  end
-
-  def limit_reached?(item_id)
-    count_of(item_id) == Item.find(item_id).inventory
   end
 
   def get_discount(item_id)
@@ -58,5 +53,9 @@ class Cart
 
   def discount_percentage(item_id)
     get_discount(item_id).percent
+  end
+
+  def limit_reached?(item_id)
+    count_of(item_id) == Item.find(item_id).inventory
   end
 end
