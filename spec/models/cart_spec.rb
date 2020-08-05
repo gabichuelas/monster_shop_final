@@ -53,6 +53,20 @@ RSpec.describe Cart do
       expect(@cart.subtotal_of(@giant.id)).to eq(100)
     end
 
+    it '.discounted_subtotal()' do
+
+      five_five = Discount.create!(name: 'Five on Five', item_minimum: 5, percent: 5, merchant_id: @megan.id)
+      twenty_ten = Discount.create!(name: 'Twenty on Ten', item_minimum: 10, percent: 20, merchant_id: @megan.id)
+
+      4.times do
+        @cart.add_item(@ogre.id.to_s)
+      end
+
+      expect(@cart.count_of(@ogre.id)).to eq(5)
+      expect(@cart.subtotal_of(@ogre.id)).to eq(100)
+      expect(@cart.discounted_subtotal(@ogre.id)).to eq(95)
+    end
+
     it '.limit_reached?()' do
       expect(@cart.limit_reached?(@ogre.id)).to eq(false)
       expect(@cart.limit_reached?(@giant.id)).to eq(true)
@@ -62,6 +76,23 @@ RSpec.describe Cart do
       @cart.less_item(@giant.id.to_s)
 
       expect(@cart.count_of(@giant.id)).to eq(1)
+    end
+
+    it '.check_discounts(), .discount_percentage' do
+
+      five_five = Discount.create!(name: 'Five on Five', item_minimum: 5, percent: 5, merchant_id: @megan.id)
+
+      twenty_ten = Discount.create!(name: 'Twenty on Ten', item_minimum: 10, percent: 20, merchant_id: @megan.id)
+
+      4.times do
+        @cart.add_item(@ogre.id.to_s)
+      end
+      expect(@cart.count_of(@ogre.id)).to eq(5)
+
+      expect(@cart.get_discount(@ogre.id)).to eq(five_five)
+      expect(@cart.discount_percentage(@ogre.id)).to eq(five_five.percent)
+
+      expect(five_five.merchant_id).to eq(@megan.id)
     end
   end
 end

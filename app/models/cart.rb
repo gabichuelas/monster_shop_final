@@ -40,6 +40,21 @@ class Cart
     @contents[item_id.to_s] * Item.find(item_id).price
   end
 
+  def discounted_subtotal(item_id)
+    discount = discount_percentage(item_id).fdiv(100)
+    subtotal = @contents[item_id.to_s] * Item.find(item_id).price
+    subtotal -= discount * subtotal
+  end
+
+  def get_discount(item_id)
+    item = Item.find(item_id)
+    item.merchant.discounts.where(item_minimum: count_of(item_id)).order('percent desc').first
+  end
+
+  def discount_percentage(item_id)
+    get_discount(item_id).percent
+  end
+
   def limit_reached?(item_id)
     count_of(item_id) == Item.find(item_id).inventory
   end
